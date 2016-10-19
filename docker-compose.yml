@@ -1,0 +1,57 @@
+version: '2'
+
+networks:
+    public:
+        driver: bridge
+    private:
+        driver: bridge
+
+services:
+  php:
+    container_name: php-container
+    image: php:fpm
+    volumes:
+      - ./app/www:/var/www/html
+      - ./app/conf/php:/usr/local/etc/php
+    networks:
+      - private
+
+  nginx:
+    container_name: nginx-container
+    image: nginx:latest
+    ports:
+      - 80:80
+    volumes:
+      - ./app/www:/var/www/html
+
+      - ./app/conf/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./app/conf/nginx/vhost:/etc/nginx/sites-available
+
+      - ./app/logs/nginx:/var/log/nginx
+    networks:
+      - public
+      - private
+
+  mysql:
+    container_name: mysql-container
+    image: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: database
+    volumes:
+      - ./app/conf/mysql:/etc/mysql/conf.d
+      - ./app/logs/mysql:/var/logs/mysql/
+    networks:
+      - private
+
+  memcached:
+    container_name: memcached-container
+    image: memcached
+    ports:
+      - "11211:11211"
+    networks:
+      - private
