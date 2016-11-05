@@ -9,49 +9,46 @@ networks:
 services:
   php:
     container_name: php-container
-    image: php:fpm
+    image: ${PHP_DOCKER_IMAGE_VENDOR}:${PHP_DOCKER_IMAGE_TAG}
     volumes:
-      - ./app/www:/var/www/html
-      - ./app/conf/php:/usr/local/etc/php
+      - ${WWW_ROOT}:/var/www/html
+      - ${PHP_CONFIG_ROOT}:/usr/local/etc/php
     networks:
       - private
+    env_file: ${ENV_FILE}
 
   nginx:
     container_name: nginx-container
-    image: nginx:latest
+    image: ${NGINX_DOCKER_IMAGE_VENDOR}:${NGINX_DOCKER_IMAGE_TAG}
     ports:
-      - 80:80
+      - "${NGINX_HOST_PORT}:80"
     volumes:
-      - ./app/www:/var/www/html
-
-      - ./app/conf/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./app/conf/nginx/vhost:/etc/nginx/sites-available
-
-      - ./app/logs/nginx:/var/log/nginx
+      - ${WWW_ROOT}:/var/www/html
+      - ${NGINX_CONFIG_FILE}:/etc/nginx/nginx.conf:ro
+      - ${NGINX_VHOST_ROOT}:/etc/nginx/sites-available
+      - ${NGINX_LOG_ROOT}:/var/log/nginx
     networks:
       - public
       - private
+    env_file: ${ENV_FILE}
 
   mysql:
     container_name: mysql-container
-    image: mysql
+    image: ${MYSQL_DOCKER_IMAGE_VENDOR}:${MYSQL_DOCKER_IMAGE_TAG}
     ports:
-      - "3306:3306"
-    environment:
-      MYSQL_USER: dev
-      MYSQL_PASSWORD: secret
-      MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: database
+      - "${MYSQL_HOST_PORT}:3306"
     volumes:
       - ./app/conf/mysql:/etc/mysql/conf.d
       - ./app/logs/mysql:/var/logs/mysql/
     networks:
       - private
+    env_file: ${ENV_FILE}
 
   memcached:
     container_name: memcached-container
-    image: memcached
+    image: ${MEMCACHED_DOCKER_IMAGE_VENDOR}:${MEMCACHED_DOCKER_IMAGE_TAG}
     ports:
-      - "11211:11211"
+      - "${MEMCACHED_HOST_PORT}:11211"
     networks:
       - private
+    env_file: ${ENV_FILE}
