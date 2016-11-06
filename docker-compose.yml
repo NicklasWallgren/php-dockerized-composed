@@ -9,10 +9,18 @@ networks:
 services:
   php:
     container_name: php-container
-    image: ${PHP_DOCKER_IMAGE_VENDOR}:${PHP_DOCKER_IMAGE_TAG}
+    build:
+      context: .
+      dockerfile: php-7.0-fpm
+      args:
+        - INSTALL_XDEBUG=${INSTALL_XDEBUG}
+        - INSTALL_MCRYPT=${INSTALL_MCRYPT}
+        - INSTALL_PDO_MYSQL=${INSTALL_PDO_MYSQL}
+        - INSTALL_PDO_PGSQL=${INSTALL_PDO_PGSQL}
+        - XDEBUG_CONFIG_FILE=${XDEBUG_CONFIG_FILE}
     volumes:
       - ${WWW_ROOT}:/var/www/html
-      - ${PHP_CONFIG_ROOT}:/usr/local/etc/php
+      - ${PHP_CONFIG_FILE}:/usr/local/etc/php/php.ini
     networks:
       - private
     env_file: ${ENV_FILE}
