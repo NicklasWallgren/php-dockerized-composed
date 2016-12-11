@@ -7,20 +7,36 @@ networks:
         driver: bridge
 
 services:
-  php:
-    container_name: php-container
+  php-fpm:
+    container_name: php-container-fpm
     build:
       context: .
-      dockerfile: php-7.0-fpm
+      dockerfile: ./images/php-7.0-fpm
       args:
         - INSTALL_XDEBUG=${INSTALL_XDEBUG}
         - INSTALL_MCRYPT=${INSTALL_MCRYPT}
         - INSTALL_PDO_MYSQL=${INSTALL_PDO_MYSQL}
         - INSTALL_PDO_PGSQL=${INSTALL_PDO_PGSQL}
+        - INSTALL_ICONV=${INSTALL_ICONV}
+        - INSTALL_SOAP=${INSTALL_SOAP}
         - XDEBUG_CONFIG_FILE=${XDEBUG_CONFIG_FILE}
-    volumes:
-      - ${WWW_ROOT}:/var/www/html
-      - ${PHP_CONFIG_FILE}:/usr/local/etc/php/php.ini
+    networks:
+      - private
+    env_file: ${ENV_FILE}
+
+  php-cli:
+    container_name: php-container-cli
+    build:
+      context: .
+      dockerfile: ./images/php-7.0-cli
+      args:
+        - INSTALL_XDEBUG=${CLI_INSTALL_XDEBUG}
+        - INSTALL_MCRYPT=${CLI_INSTALL_MCRYPT}
+        - INSTALL_PDO_MYSQL=${CLI_INSTALL_PDO_MYSQL}
+        - INSTALL_PDO_PGSQL=${CLI_INSTALL_PDO_PGSQL}
+        - INSTALL_ICONV=${CLI_INSTALL_ICONV}
+        - INSTALL_SOAP=${CLI_INSTALL_SOAP}
+        - XDEBUG_CONFIG_FILE=${CLI_XDEBUG_CONFIG_FILE}
     networks:
       - private
     env_file: ${ENV_FILE}
@@ -30,11 +46,6 @@ services:
     image: ${NGINX_DOCKER_IMAGE_VENDOR}:${NGINX_DOCKER_IMAGE_TAG}
     ports:
       - "${NGINX_HOST_PORT}:80"
-    volumes:
-      - ${WWW_ROOT}:/var/www/html
-      - ${NGINX_CONFIG_FILE}:/etc/nginx/nginx.conf:ro
-      - ${NGINX_VHOST_ROOT}:/etc/nginx/sites-available
-      - ${NGINX_LOG_ROOT}:/var/log/nginx
     networks:
       - public
       - private
@@ -45,9 +56,6 @@ services:
     image: ${MYSQL_DOCKER_IMAGE_VENDOR}:${MYSQL_DOCKER_IMAGE_TAG}
     ports:
       - "${MYSQL_HOST_PORT}:3306"
-    volumes:
-      - ./app/conf/mysql:/etc/mysql/conf.d
-      - ./app/logs/mysql:/var/logs/mysql/
     networks:
       - private
     env_file: ${ENV_FILE}
@@ -60,3 +68,8 @@ services:
     networks:
       - private
     env_file: ${ENV_FILE}
+
+
+
+
+

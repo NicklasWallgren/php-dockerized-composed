@@ -1,0 +1,119 @@
+FROM php:7.0-fpm
+
+MAINTAINER Nicklas Wallgren <nicklas.wallgren@gmail.com>
+
+# Arguments
+ARG INSTALL_XDEBUG=false
+ARG INSTALL_MCRYPT=false
+ARG INSTALL_PDO_MYSQL=false
+ARG INSTALL_PDO_PGSQL=false
+ARG INSTALL_ICONV=false
+ARG INSTALL_SOAP=false
+ARG XDEBUG_CONFIG_FILE=false
+
+#
+#--------------------------------------------------------------------------
+# Software's Installation
+
+#--------------------------------------------------------------------------
+#
+# Installing tools and PHP extentions using "apt", "docker-php", "pecl",
+#
+
+# Install "curl", "libmemcached-dev", "libpq-dev", "libjpeg-dev",
+#         "libpng12-dev", "libfreetype6-dev", "libssl-dev", "libmcrypt-dev",
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        curl \
+        libmemcached-dev \
+        libz-dev \
+        libpq-dev \
+        libjpeg-dev \
+        libpng12-dev \
+        libfreetype6-dev \
+        libssl-dev
+
+RUN docker-php-ext-install opcache
+RUN docker-php-ext-install json
+
+#
+#--------------------------------------------------------------------------
+# XDEBUG extension installation
+#--------------------------------------------------------------------------
+#
+RUN if [ ${INSTALL_XDEBUG} = true ]; then \
+    # Install the xdebug extension
+    pecl install xdebug && \
+    docker-php-ext-enable xdebug \
+;fi
+
+# Copy xdebug configration for remote debugging
+COPY ${XDEBUG_CONFIG_FILE} /usr/local/etc/php/conf.d/xdebug.ini
+
+#
+#--------------------------------------------------------------------------
+# MCRYPT extension installation
+#--------------------------------------------------------------------------
+RUN if [ ${INSTALL_MCRYPT} = true ]; then \
+    apt-get update && \
+        apt-get install -y --no-install-recommends \
+            libmcrypt-dev && \
+
+    # Install the PHP mcrypt extension
+    docker-php-ext-install mcrypt \
+;fi
+
+#
+#--------------------------------------------------------------------------
+# PDO MYSQL extension installation
+#--------------------------------------------------------------------------
+#
+RUN if [ ${INSTALL_PDO_MYSQL} = true ]; then \
+    # Install the PHP pdo_mysql extension
+    docker-php-ext-install pdo_mysql \
+;fi
+
+#
+#--------------------------------------------------------------------------
+# PDO PGSQL extension installation
+#--------------------------------------------------------------------------
+#
+RUN if [ ${INSTALL_PDO_PGSQL} = true ]; then \
+    # Install the PHP pdo_pgsql extension
+    docker-php-ext-install pdo_pgsql \
+;fi
+
+#
+#--------------------------------------------------------------------------
+# ICONV extension installation
+#--------------------------------------------------------------------------
+#
+RUN if [ ${INSTALL_ICONV} = true ]; then \
+    # Install the PHP iconv extension
+    docker-php-ext-install iconv \
+;fi
+
+#
+#--------------------------------------------------------------------------
+# PDO SOAP extension installation
+#--------------------------------------------------------------------------
+#
+RUN if [ ${INSTALL_SOAP} = true ]; then \
+     apt-get install -y --no-install-recommends \
+            libxml2 \
+            libxml2-dev && \
+
+    # Install the PHP soap extension
+    docker-php-ext-install soap \
+;fi
+
+#
+#--------------------------------------------------------------------------
+# PTHREADS extension installation
+#--------------------------------------------------------------------------
+#RUN pecl install pthreads
+#RUN docker-php-ext-enable pthreads
+
+
+RUN docker-php-ext-install sysvsem
+

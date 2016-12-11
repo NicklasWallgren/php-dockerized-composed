@@ -1,10 +1,4 @@
-#
-#--------------------------------------------------------------------------
-# Image Setup
-#--------------------------------------------------------------------------
-#
-
-FROM php:7.0-fpm
+FROM php:7.0-zts
 
 MAINTAINER Nicklas Wallgren <nicklas.wallgren@gmail.com>
 
@@ -13,11 +7,37 @@ ARG INSTALL_XDEBUG=false
 ARG INSTALL_MCRYPT=false
 ARG INSTALL_PDO_MYSQL=false
 ARG INSTALL_PDO_PGSQL=false
-ARG XDEBUG_CONFIG_FILE
+ARG INSTALL_ICONV=false
+ARG INSTALL_SOAP=false
+ARG XDEBUG_CONFIG_FILE=false
+
+# The application directory
+RUN mkdir -p /var/www/app
+WORKDIR /var/www/app
+
+
+
+# Copy the application and configuration files
+
+
+
+
+
+
+# Copy xdebug configration for remote debugging
+COPY ${XDEBUG_CONFIG_FILE} /usr/local/etc/php/conf.d/xdebug.ini
+
+
+
+
+
+
+
 
 #
 #--------------------------------------------------------------------------
 # Software's Installation
+
 #--------------------------------------------------------------------------
 #
 # Installing tools and PHP extentions using "apt", "docker-php", "pecl",
@@ -36,6 +56,9 @@ RUN apt-get update && \
         libfreetype6-dev \
         libssl-dev
 
+RUN docker-php-ext-install opcache
+RUN docker-php-ext-install json
+
 #
 #--------------------------------------------------------------------------
 # XDEBUG extension installation
@@ -47,8 +70,6 @@ RUN if [ ${INSTALL_XDEBUG} = true ]; then \
     docker-php-ext-enable xdebug \
 ;fi
 
-# Copy xdebug configration for remote debugging
-COPY ${XDEBUG_CONFIG_FILE} /usr/local/etc/php/conf.d/xdebug.ini
 
 #
 #--------------------------------------------------------------------------
@@ -77,8 +98,57 @@ RUN if [ ${INSTALL_PDO_MYSQL} = true ]; then \
 #--------------------------------------------------------------------------
 # PDO PGSQL extension installation
 #--------------------------------------------------------------------------
-# Install the PHP pdo_pgsql extention
+#
 RUN if [ ${INSTALL_PDO_PGSQL} = true ]; then \
     # Install the PHP pdo_pgsql extension
     docker-php-ext-install pdo_pgsql \
 ;fi
+
+#
+#--------------------------------------------------------------------------
+# ICONV extension installation
+#--------------------------------------------------------------------------
+#
+RUN if [ ${INSTALL_ICONV} = true ]; then \
+    # Install the PHP iconv extension
+    docker-php-ext-install iconv \
+;fi
+
+#
+#--------------------------------------------------------------------------
+# PDO SOAP extension installation
+#--------------------------------------------------------------------------
+#
+RUN if [ ${INSTALL_SOAP} = true ]; then \
+     apt-get install -y --no-install-recommends \
+            libxml2 \
+            libxml2-dev && \
+
+    # Install the PHP soap extension
+    docker-php-ext-install soap \
+;fi
+
+#
+#--------------------------------------------------------------------------
+# PTHREADS extension installation
+#--------------------------------------------------------------------------
+#
+RUN pecl install pthreads
+RUN docker-php-ext-enable pthreads
+
+#
+#--------------------------------------------------------------------------
+# Sysvsem extension installation
+#--------------------------------------------------------------------------
+#
+RUN docker-php-ext-install sysvsem
+
+
+
+
+
+CMD php -r 'sleep(2000);';
+
+
+
+
