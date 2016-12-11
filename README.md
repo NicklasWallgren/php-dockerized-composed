@@ -8,11 +8,6 @@ export ENV_FILE=".env"
 docker-compose up
 ```
 
-# Todo
-Uppdatera image till att kopiera in alla filer
-
-
-
 # Configuration
 ```
 WWW_ROOT=./app/www
