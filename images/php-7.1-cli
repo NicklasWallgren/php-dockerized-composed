@@ -1,4 +1,4 @@
-FROM php:7.0-zts
+FROM php:7.1-zts
 
 MAINTAINER Nicklas Wallgren <nicklas.wallgren@gmail.com>
 
@@ -25,7 +25,7 @@ WORKDIR /var/www/app
 
 
 # Copy xdebug configration for remote debugging
-COPY ${XDEBUG_CONFIG_FILE} /usr/local/etc/php/conf.d/xdebug.ini
+# COPY ${XDEBUG_CONFIG_FILE} /usr/local/etc/php/conf.d/xdebug.ini
 
 
 
@@ -126,6 +126,16 @@ RUN if [ ${INSTALL_SOAP} = true ]; then \
 
     # Install the PHP soap extension
     docker-php-ext-install soap \
+;fi
+
+#
+#--------------------------------------------------------------------------
+# MBSTRING extension installation
+#--------------------------------------------------------------------------
+#
+RUN if [ ${INSTALL_MBSTRING} = true ]; then \
+    # Install the PHP soap extension
+    docker-php-ext-install mbstring \
 ;fi
 
 #
