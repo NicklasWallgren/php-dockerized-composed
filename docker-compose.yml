@@ -23,7 +23,7 @@ services:
         - XDEBUG_CONFIG_FILE=${XDEBUG_CONFIG_FILE-null}
     networks:
       - private
-    env_file: ${ENV_FILE}
+    env_file: ${ENV_FILE-.env.default}
 
   php-cli:
     container_name: php-container-cli
@@ -41,7 +41,7 @@ services:
         - XDEBUG_CONFIG_FILE=${CLI_XDEBUG_CONFIG_FILE-null}
     networks:
       - private
-    env_file: ${ENV_FILE}
+    env_file: ${ENV_FILE-.env.default}
 
   nginx:
     container_name: nginx-container
@@ -51,7 +51,7 @@ services:
     networks:
       - public
       - private
-    env_file: ${ENV_FILE}
+    env_file: ${ENV_FILE-.env.default}
 
   mysql:
     container_name: mysql-container
@@ -60,7 +60,7 @@ services:
       - "${MYSQL_HOST_PORT}:3306"
     networks:
       - private
-    env_file: ${ENV_FILE}
+    env_file: ${ENV_FILE-.env.default}
 
   memcached:
     container_name: memcached-container
@@ -69,7 +69,7 @@ services:
       - "${MEMCACHED_HOST_PORT}:11211"
     networks:
       - private
-    env_file: ${ENV_FILE}
+    env_file: ${ENV_FILE-.env.default}
 
 
 

@@ -9,30 +9,12 @@ ARG INSTALL_PDO_MYSQL=false
 ARG INSTALL_PDO_PGSQL=false
 ARG INSTALL_ICONV=false
 ARG INSTALL_SOAP=false
+ARG INSTALL_MBSTRING=false
 ARG XDEBUG_CONFIG_FILE=false
 
 # The application directory
 RUN mkdir -p /var/www/app
 WORKDIR /var/www/app
-
-
-
-# Copy the application and configuration files
-
-
-
-
-
-
-# Copy xdebug configration for remote debugging
-# COPY ${XDEBUG_CONFIG_FILE} /usr/local/etc/php/conf.d/xdebug.ini
-
-
-
-
-
-
-
 
 #
 #--------------------------------------------------------------------------
@@ -143,8 +125,8 @@ RUN if [ ${INSTALL_MBSTRING} = true ]; then \
 # PTHREADS extension installation
 #--------------------------------------------------------------------------
 #
-RUN pecl install pthreads
-RUN docker-php-ext-enable pthreads
+#RUN pecl install pthreads
+#RUN docker-php-ext-enable pthreads
 
 #
 #--------------------------------------------------------------------------
@@ -153,12 +135,4 @@ RUN docker-php-ext-enable pthreads
 #
 RUN docker-php-ext-install sysvsem
 
-
-
-
-
 CMD php -r 'sleep(2000);';
-
-
-
-
