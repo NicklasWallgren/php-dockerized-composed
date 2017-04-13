@@ -30,7 +30,7 @@ services:
       file: docker-compose.yml
       service: nginx
     volumes:
-      - ${WWW_ROOT}:/var/www/html
+      - ${WWW_ROOT}:/var/www/html:cached
       - ${NGINX_CONFIG_FILE}:/etc/nginx/nginx.conf:ro
       - ${NGINX_VHOST_ROOT}:/etc/nginx/sites-available
       - ${NGINX_LOG_ROOT}:/var/log/nginx
