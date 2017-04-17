@@ -33,6 +33,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl \
         zip \
+        unzip \
         libmemcached-dev \
         libz-dev \
         libpq-dev \

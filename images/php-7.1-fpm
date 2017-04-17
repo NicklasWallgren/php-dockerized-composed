@@ -28,6 +28,7 @@ ARG XDEBUG_CONFIG_FILE=false
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl \
+        zip \
         unzip \
         libmemcached-dev \
         libz-dev \
