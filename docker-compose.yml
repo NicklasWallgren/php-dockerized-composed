@@ -20,6 +20,8 @@ services:
         - INSTALL_ICONV=${INSTALL_ICONV-false}
         - INSTALL_SOAP=${INSTALL_SOAP-false}
         - INSTALL_MBSTRING=${INSTALL_MBSTRING-false}
+        - INSTALL_SYSVSEM=${INSTALL_SYSVSEM-false}
+        - INSTALL_MEMCACHED=${INSTALL_MEMCACHED-false}
         - XDEBUG_CONFIG_FILE=${XDEBUG_CONFIG_FILE-null}
     networks:
       - private
@@ -38,6 +40,8 @@ services:
         - INSTALL_ICONV=${CLI_INSTALL_ICONV-false}
         - INSTALL_SOAP=${CLI_INSTALL_SOAP-false}
         - INSTALL_MBSTRING=${CLI_INSTALL_MBSTRING-false}
+        - INSTALL_SYSVSEM=${CLI_INSTALL_SYSVSEM-false}
+        - INSTALL_MEMCACHED=${CLI_INSTALL_MEMCACHED-false}
         - XDEBUG_CONFIG_FILE=${CLI_XDEBUG_CONFIG_FILE-null}
     networks:
       - private

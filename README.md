@@ -3,7 +3,7 @@ Dockerized PHP development stack: Nginx, MySQL, PHP-FPM, Memcached
 
 # Usage
 ```
-cp .env.template .env
+cp .env.default .env
 export ENV_FILE=".env"
 docker-compose up
 ```
@@ -40,9 +40,28 @@ MEMCACHED_HOST_PORT=11211
 # XDEBUG environment variables
 XDEBUG_CONFIG_FILE=./app/conf/xdebug/xdebug.ini
 
-# BUILD options
+# PHP-FPM build options
 INSTALL_XDEBUG=false
 INSTALL_MCRYPT=false
 INSTALL_PDO_MYSQL=false
 INSTALL_PDO_PGSQL=false
+INSTALL_ICONV=false
+INSTALL_SOAP=false
+INSTALL_MBSTRING=false
+INSTALL_SYSVSEM=false
+INSTALL_MEMCACHED=false
+
+# PHP-CLI build options
+CLI_INSTALL_XDEBUG=false
+CLI_INSTALL_MCRYPT=false
+CLI_INSTALL_PDO_MYSQL=false
+CLI_INSTALL_PDO_PGSQL=false
+CLI_INSTALL_ICONV=false
+CLI_INSTALL_SOAP=false
+CLI_INSTALL_MBSTRING=false
+CLI_INSTALL_SYSVSEM=false
+CLI_INSTALL_MEMCACHED=false
+
+
+
 ```
